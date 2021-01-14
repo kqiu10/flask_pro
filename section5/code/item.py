@@ -104,4 +104,14 @@ class Item(Resource):
 
 class ItemList(Resource):
     def get(self):
-        return {"items": items}
+        connection = sqlite3.connect("section5.db")
+        cursor = connection.cursor()
+
+        query = "SELECT * FROM items"
+        items = []
+        result = cursor.execute(query)
+        for row in result:
+            items.append({'name': row[0], 'price': row[1]})
+
+        connection.close()
+        return list(items)
