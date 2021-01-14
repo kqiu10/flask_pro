@@ -39,15 +39,25 @@ class Item(Resource):
             return {'message': "An item with same name '{}' already exists.".format(name)}, 400
         data = Item.parser.parse_args()
         item = {"name": name, "price": data['price']}
+        try:
+            self.insert(item)
+        except:
+            return {"message": "An error occurred inserting the item."}, 500  # internal server error
+
+        return item, 201
+
+
+    @classmethod
+    def insert(cls,item):
         connection = sqlite3.connect("section5.db")
         cursor = connection.cursor()
 
         query = "INSERT INTO items VALUES (?, ?)"
-        result = cursor.execute(query, (item['name'], item['price']))
-        row = result.fetchone()
+        cursor.execute(query, (item['name'], item['price']))
+
+        connection.commit()
         connection.close()
 
-        return item, 201
 
     def delete(self, name):
         connection = sqlite3.connect("section5.db")
