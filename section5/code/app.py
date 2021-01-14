@@ -2,6 +2,7 @@ from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
 from flask_jwt import JWT, jwt_required
 from security import authenticate, identity
+from user import UserRegister
 
 app = Flask(__name__)
 app.secret_key = "Kan"
@@ -16,7 +17,7 @@ class Item(Resource):
 
     parser = reqparse.RequestParser()
     parser.add_argument("price",
-                        type =float,
+                        type=float,
                         required=True,
                         help="This field cannot be left blank!")
 
@@ -57,5 +58,6 @@ class ItemList(Resource):
 
 api.add_resource(Item, "/item/<string:name>")  # http://127.0.0.1:5000/item/desk
 api.add_resource(ItemList, '/items')
+api.add_resource(UserRegister, '/register')
 
 app.run(port=5000, debug=True)
